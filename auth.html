@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔐 FitAI - Авторизация</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================
+       FitAI Auth - 100% АДАПТИВНАЯ
+       ======================================== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, Arial, sans-serif;
+      background: linear-gradient(135deg, #000, #1a0000);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 🔥 НАВИГАЦИЯ (единая для всех страниц) */
+    nav {
+      height: 80px;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 2px 20px rgba(255,26,26,0.3);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      box-sizing: border-box;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .logo {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, #ff1a1a, #ff6600);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Orbitron', monospace;
+    }
+
+    /* ЛОГО НА СТРАНИЦЕ АВТОРИЗАЦИИ */
+    .page-logo {
+      font-size: clamp(2.5rem, 10vw, 3.5rem);
+      background: linear-gradient(45deg, #ff4444, #ff8800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      font-weight: 800;
+      font-family: 'Orbitron', monospace;
+      animation: logoGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes logoGlow {
+      from { filter: drop-shadow(0 0 5px #ff1a1a); }
+      to { filter: drop-shadow(0 0 20px #ff6600); }
+    }
+
+    /* ✅ ОСНОВНОЙ КОНТЕНТ */
+    main {
+      padding-top: 100px;
+      padding-bottom: 2rem;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .card {
+      background: rgba(20,20,20,0.98);
+      padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2.5rem);
+      border-radius: 24px;
+      border: 2px solid rgba(255,68,68,0.3);
+      width: 100%;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 35px 70px rgba(255,26,26,0.2);
+      border-color: rgba(255,68,68,0.5);
+    }
+
+    .status {
+      background: rgba(255,170,0,0.2);
+      color: #ffaa00;
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 600;
+      border: 1px solid rgba(255,170,0,0.5);
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+    }
+
+    /* ✅ ИНПУТЫ - АДАПТИВНЫЕ */
+    input {
+      width: 100%;
+      padding: clamp(16px, 4vw, 18px) clamp(20px, 5vw, 24px);
+      font-size: clamp(16px, 4vw, 18px); /* Без зума на iOS */
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      color: white;
+      margin-bottom: 1.5rem;
+      outline: none;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #ff4444;
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 0 0 4px rgba(255,68,68,0.15);
+      transform: scale(1.02);
+    }
+
+    input::placeholder {
+      color: #888;
+      font-weight: 400;
+    }
+
+    /* ✅ КНОПКИ - ЛЕГКИЕ ДЛЯ ПАЛЬЦА */
+    .btn {
+      width: 100%;
+      padding: clamp(16px, 4vw, 18px) clamp(20px, 5vw, 24px);
+      font-size: clamp(16px, 4vw, 18px);
+      font-weight: 700;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: inherit;
+      min-height: 52px; /* Стандарт для мобильных */
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-login {
+      background: linear-gradient(135deg, #ff1a1a, #ff6600);
+      color: white;
+    }
+    .btn-register {
+      background: linear-gradient(135deg, #44ff44, #66ff99);
+      color: #000;
+    }
+    .btn-guest {
+      background: linear-gradient(135deg, #4488ff, #66aaff);
+      color: white;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    .btn:hover::before { left: 100%; }
+    .btn:hover:not(:disabled) {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(-1px) scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .msg {
+      min-height: 25px;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: clamp(0.9rem, 3vw, 1rem);
+    }
+
+    .success {
+      background: rgba(68,255,68,0.2);
+      color: #44ff44;
+      border: 1px solid rgba(68,255,68,0.4);
+    }
+    .error {
+      background: rgba(255,68,68,0.2);
+      color: #ff4444;
+      border: 1px solid rgba(255,68,68,0.4);
+    }
+
+    /* ✅ КНОПКА ВЫХОДА */
+    .logout-btn {
+      position: fixed;
+      top: 95px; /* Под навбар */
+      right: 20px;
+      z-index: 999;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #ff1a1a, #ff6600);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: clamp(13px, 3vw, 14px);
+      box-shadow: 0 10px 25px rgba(255,26,26,0.4);
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(255,26,26,0.6);
+    }
+
+    /* ✅ МОБИЛЬНАЯ АДАПТАЦИЯ */
+    @media (max-width: 768px) {
+      nav {
+        height: 70px;
+        padding: 0 1.5rem;
+      }
+
+      main {
+        padding-top: 90px;
+        padding: 1rem;
+      }
+
+      .card {
+        padding: 2rem 1.5rem;
+        margin: 1rem 0;
+      }
+
+      .page-logo {
+        margin-bottom: 1.5rem;
+      }
+
+      .logout-btn {
+        top: 85px;
+        right: 15px;
+        padding: 10px 20px;
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .card {
+        padding: 1.5rem 1.2rem;
+        border-radius: 20px;
+      }
+    }
+
+    /* АНИМАЦИИ */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body>
+<!-- ✅ НАВИГАЦИЯ -->
+<nav>
+  <div class="nav-container">
+    <div class="logo">🥊 FitAI</div>
+    <div class="nav-toggle" id="navToggle" style="display: none;">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ✅ ОСНОВНОЙ КОНТЕНТ -->
+<main>
+  <!-- КНОПКА ВЫХОДА -->
+  <button class="logout-btn" onclick="logout()" id="logoutBtn" style="display: none;">🚪 Выйти</button>
+
+  <div class="page-logo">🔐 FitAI</div>
+
+  <div class="card">
+    <div class="status" id="status">🔍 Проверяем статус...</div>
+    <div class="msg" id="msg"></div>
+
+    <input type="text" id="username" placeholder="Логин" autocomplete="off" autocorrect="off" spellcheck="false">
+    <input type="password" id="password" placeholder="Пароль" autocomplete="new-password" autocorrect="off" spellcheck="false">
+
+    <button class="btn btn-login" id="loginBtn">🚪 ВОЙТИ</button>
+    <button class="btn btn-register" id="regBtn">📝 РЕГИСТРАЦИЯ</button>
+    <button class="btn btn-guest" id="guestBtn">👻 ГОСТЬ</button>
+  </div>
+</main>
+
+<script>
+  (function() {
+    'use strict';
+    console.log('🚀 FitAI Auth v3.0 - АДАПТИВНАЯ');
+
+    const USER_KEY = 'fitai_user';
+    const statusEl = document.getElementById('status');
+    const msgEl = document.getElementById('msg');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    function showMsg(text, type = '') {
+      msgEl.textContent = text;
+      msgEl.className = `msg ${type}`;
+    }
+
+    function updateStatus(text) {
+      statusEl.textContent = text;
+      console.log('📊 Status:', text);
+    }
+
+    // ✅ ПРОВЕРКА АВТОРИЗАЦИИ
+    function checkAuthStatus() {
+      const userData = localStorage.getItem(USER_KEY);
+      if (!userData) {
+        updateStatus('✅ Готов к регистрации/входу');
+        return null;
+      }
+
+      try {
+        const user = JSON.parse(userData);
+        if (user.username) {
+          updateStatus(`👤 Авторизован: ${user.username}`);
+          logoutBtn.style.display = 'block';
+          showMsg(`Привет, ${user.username}!`, 'success');
+          return user;
+        }
+      } catch(e) {
+        localStorage.removeItem(USER_KEY);
+      }
+
+      updateStatus('✅ Готов к регистрации/входу');
+      return null;
+    }
+
+    // ✅ ВЫХОД
+    window.logout = function() {
+      if (confirm('Выйти из аккаунта?')) {
+        localStorage.removeItem(USER_KEY);
+        localStorage.removeItem('fitai_users');
+        updateStatus('🧹 Выход выполнен');
+        logoutBtn.style.display = 'none';
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        showMsg('Выход выполнен!', 'success');
+      }
+    };
+
+    // ✅ ВХОД
+    function login() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        showMsg('Заполните все поля!', 'error');
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem('fitai_users') || '[]');
+      const user = users.find(u =>
+              u.username.toLowerCase() === username.toLowerCase() && u.password === password
+      );
+
+      if (user) {
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+        showMsg('✅ Вход успешен! Переходим...', 'success');
+        setTimeout(() => window.location.href = 'index.html', 1500);
+      } else {
+        showMsg('❌ Неверный логин/пароль!', 'error');
+      }
+    }
+
+    // ✅ РЕГИСТРАЦИЯ
+    function register() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        showMsg('Заполните все поля!', 'error');
+        return;
+      }
+
+      if (username.length < 3) {
+        showMsg('Логин минимум 3 символа!', 'error');
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem('fitai_users') || '[]');
+      const exists = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+      if (exists) {
+        showMsg('Логин уже занят!', 'error');
+      } else {
+        const newUser = {
+          id: Date.now(),
+          username: username,
+          password: password,
+          registered: new Date().toLocaleString('ru-RU')
+        };
+        users.push(newUser);
+        localStorage.setItem('fitai_users', JSON.stringify(users));
+        localStorage.setItem(USER_KEY, JSON.stringify(newUser));
+        showMsg('✅ Регистрация успешна! Переходим...', 'success');
+        setTimeout(() => window.location.href = 'index.html', 1500);
+      }
+    }
+
+    // ✅ ГОСТЬ
+    function guestLogin() {
+      const guest = {
+        id: 0,
+        username: 'Гость',
+        guest: true,
+        registered: new Date().toLocaleString('ru-RU')
+      };
+      localStorage.setItem(USER_KEY, JSON.stringify(guest));
+      showMsg('👻 Режим гостя! Переходим...', 'success');
+      setTimeout(() => window.location.href = 'index.html', 1000);
+    }
+
+    // ✅ ИНИЦИАЛИЗАЦИЯ
+    function init() {
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      checkAuthStatus();
+
+      document.getElementById('loginBtn').onclick = login;
+      document.getElementById('regBtn').onclick = register;
+      document.getElementById('guestBtn').onclick = guestLogin;
+
+      // ENTER
+      document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') login();
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
+</body>
+</html>

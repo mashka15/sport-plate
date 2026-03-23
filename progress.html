@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 FitAI — Прогресс</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background:
+                    linear-gradient(135deg, #000 0%, #1a0000 50%, #2a0000 100%),
+                    radial-gradient(ellipse at 20% 30%, rgba(255,170,0,0.18) 0%, transparent 50%),
+                    radial-gradient(ellipse at 80% 70%, rgba(255,238,68,0.12) 0%, transparent 50%);
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+            letter-spacing: 0.02em;
+        }
+
+        /* 🔥 АНИМИРОВАННЫЕ КРУГИ */
+        .floating-circle {
+            position: fixed; border-radius: 50%; z-index: 1;
+            animation: float 12s ease-in-out infinite;
+        }
+        .circle-1 {
+            width: 380px; height: 380px;
+            background: radial-gradient(circle, rgba(255,170,0,0.3), rgba(255,170,0,0.12), transparent);
+            top: 15%; left: -18%;
+            box-shadow: 0 0 120px rgba(255,170,0,0.5);
+            animation-delay: 0s;
+        }
+        .circle-2 {
+            width: 320px; height: 320px;
+            background: radial-gradient(circle, rgba(255,238,68,0.25), rgba(255,238,68,0.08), transparent);
+            top: 65%; right: -12%;
+            box-shadow: 0 0 100px rgba(255,238,68,0.4);
+            animation-delay: 4s;
+        }
+        .circle-3 {
+            width: 360px; height: 360px;
+            background: radial-gradient(circle, rgba(255,170,0,0.15), transparent);
+            bottom: 8%; left: 15%;
+            animation-delay: 8s;
+            box-shadow: 0 0 110px rgba(255,170,0,0.3);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            33% { transform: translateY(-25px) rotate(120deg) scale(1.04); }
+            66% { transform: translateY(-12px) rotate(240deg) scale(0.96); }
+        }
+
+        /* 🔥 ДИНАМИЧНАЯ НАВИГАЦИЯ */
+        nav {
+            height: clamp(70px, 10vh, 85px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.97);
+            backdrop-filter: blur(35px) saturate(200%);
+            box-shadow:
+                    0 8px 32px rgba(0,0,0,0.5),
+                    0 2px 20px rgba(255,26,26,0.3),
+                    inset 0 1px 0 rgba(255,255,255,0.1);
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-bottom: 1px solid rgba(255,170,0,0.3);
+        }
+
+        nav.scrolled {
+            height: 70px;
+            backdrop-filter: blur(50px);
+            box-shadow:
+                    0 5px 25px rgba(0,0,0,0.6),
+                    0 2px 15px rgba(255,170,0,0.4);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            padding: 0 clamp(1.5rem, 5vw, 3rem);
+            position: relative;
+        }
+
+        .logo {
+            font-size: clamp(1.8rem, 5vw, 2.4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff1a1a 0%, #ff6600 30%, #ffaa00 70%, #ff6600 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoGlow 3s ease-in-out infinite;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 0.08em;
+            position: relative;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            background: linear-gradient(45deg, #ff1a1a, #ff6600, #ffaa00, #ff1a1a);
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0;
+            transition: all 0.4s;
+        }
+
+        .logo:hover::before {
+            opacity: 0.3;
+            animation: rotateGlow 2s linear infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { filter: drop-shadow(0 0 15px rgba(255,26,26,0.8)); background-position: 0% 50%; }
+            50% { filter: drop-shadow(0 0 30px rgba(255,170,0,1)); background-position: 100% 50%; }
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: clamp(1.5rem, 3vw, 2.5rem);
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.95);
+            text-decoration: none;
+            font-weight: 800;
+            padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1.8rem, 4vw, 2.5rem);
+            border-radius: 50px;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.04em;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            width: 0; height: 3px;
+            background: linear-gradient(90deg, #ffaa00, #ffdd44);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::before { left: 100%; }
+        .nav-links a:hover::after { width: 80%; }
+
+        .nav-links a.active,
+        .nav-links a:hover {
+            background: linear-gradient(135deg, rgba(255,170,0,0.25), rgba(255,238,68,0.2));
+            color: #ffdd44;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow:
+                    0 15px 40px rgba(255,170,0,0.4),
+                    0 0 20px rgba(255,238,68,0.3);
+            border: 1px solid rgba(255,170,0,0.4);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+            background: linear-gradient(90deg, #ffdd44, #ffaa00);
+            height: 4px;
+            box-shadow: 0 0 10px rgba(255,238,68,0.8);
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            width: 65px; height: 65px;
+            background: rgba(255,170,0,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            padding: 14px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-toggle:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 20px 50px rgba(255,170,0,0.5);
+            border-color: #ffaa00;
+        }
+
+        .nav-toggle span {
+            width: 32px; height: 4px;
+            background: linear-gradient(135deg, #fff, #ffdd44);
+            border-radius: 3px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        /* КОНТЕНТ */
+        main {
+            padding-top: clamp(120px, 22vh, 160px);
+            padding-bottom: 3rem;
+            padding-left: clamp(1.5rem, 6vw, 2.5rem);
+            padding-right: clamp(1.5rem, 6vw, 2.5rem);
+        }
+
+        .hero {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 11vw, 6rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffaa00, #ffdd44, #ffaa00, #ffdd44);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2.5rem;
+            line-height: 1.15;
+            animation: heroPulse 3s ease-in-out infinite;
+            font-family: 'Orbitron', monospace;
+            padding: 0 clamp(2rem, 8vw, 4rem);
+            letter-spacing: 0.08em;
+            text-shadow: 0 0 40px rgba(255,170,0,0.6);
+        }
+
+        @keyframes heroPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 30px rgba(255,170,0,0.7)); background-position: 0% 50%; }
+            50% { transform: scale(1.03); filter: drop-shadow(0 0 50px rgba(255,238,68,0.8)); background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 4vw, 1.7rem);
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 6rem;
+            line-height: 1.8;
+            padding: 0 clamp(2rem, 8vw, 4rem);
+            letter-spacing: 0.05em;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .modal-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: clamp(2rem, 6vw, 4rem);
+            background: rgba(20,20,20,0.95);
+            border-radius: 4rem;
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(25px) saturate(180%);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,170,0,0.08), transparent 50%);
+            z-index: 0;
+        }
+
+        .modal-content > * { position: relative; z-index: 1; }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 📊 СТАТИСТИКА */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 22vw, 350px), 1fr));
+            gap: clamp(2rem, 4vw, 2.5rem);
+            margin-bottom: clamp(4rem, 8vw, 5rem);
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            padding: clamp(2.5rem, 6vw, 3rem);
+            border-radius: 3rem;
+            border: 2px solid rgba(255,170,0,0.4);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,238,68,0.2), transparent);
+            transition: left 1s;
+        }
+
+        .stat-card:hover::before { left: 100%; }
+        .stat-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            border-color: #ffdd44;
+            box-shadow: 0 35px 80px rgba(255,170,0,0.4);
+        }
+
+        .stat-icon {
+            font-size: clamp(3.5rem, 10vw, 4.5rem);
+            margin-bottom: 1.8rem;
+            display: block;
+            filter: drop-shadow(0 0 20px rgba(255,238,68,0.5));
+        }
+
+        .stat-number {
+            font-size: clamp(2.8rem, 8vw, 4rem);
+            font-weight: 900;
+            color: #ffdd44;
+            font-family: 'Orbitron', monospace;
+            margin-bottom: 1.2rem;
+            text-shadow: 0 0 30px rgba(255,221,68,0.9);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            color: #ffaa00;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        /* 📈 ГРАФИКИ */
+        .charts-section {
+            background: rgba(255,170,0,0.15);
+            border: 2px solid rgba(255,170,0,0.5);
+            border-radius: 4rem;
+            padding: clamp(3rem, 8vw, 4rem);
+            margin-bottom: 5rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 0.5s both;
+            backdrop-filter: blur(20px);
+        }
+
+        .charts-section::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,170,0,0.15) 0%, transparent 70%);
+            animation: chartGlow 5s ease-in-out infinite;
+        }
+
+        @keyframes chartGlow {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.3; }
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(320px, 28vw, 420px), 1fr));
+            gap: clamp(2rem, 4vw, 3rem);
+            position: relative;
+            z-index: 2;
+        }
+
+        .chart-card {
+            background: rgba(20,20,20,0.95);
+            backdrop-filter: blur(25px);
+            border-radius: 3rem;
+            padding: clamp(2rem, 5vw, 2.5rem);
+            border: 2px solid rgba(255,255,255,0.15);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,170,0,0.6);
+            box-shadow: 0 30px 70px rgba(255,170,0,0.3);
+        }
+
+        .chart-title {
+            font-size: clamp(1.3rem, 4vw, 1.7rem);
+            color: #ffdd44;
+            margin-bottom: 2.5rem;
+            font-weight: 900;
+            font-family: 'Orbitron', monospace;
+            text-align: center;
+            letter-spacing: 0.05em;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: clamp(22px, 5vw, 28px);
+            background: rgba(255,255,255,0.12);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            position: relative;
+            box-shadow: inset 0 4px 16px rgba(0,0,0,0.4);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ffaa00, #ffdd44, #ffaa00);
+            background-size: 200% 100%;
+            border-radius: 16px;
+            width: 0%;
+            transition: width 2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(255,170,0,0.8);
+            animation: progressGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes progressGlow {
+            0%, 100% { background-position: 200% 0; }
+            50% { background-position: 0 0; }
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: progressShine 2.5s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-label {
+            text-align: center;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 800;
+            color: #ffdd44;
+            margin-top: 1.5rem;
+            letter-spacing: 0.03em;
+        }
+
+        /* 🏆 ДОСТИЖЕНИЯ */
+        .achievements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(260px, 24vw, 340px), 1fr));
+            gap: clamp(1.8rem, 4vw, 2rem);
+            margin-top: 5rem;
+            animation: fadeInUp 1s ease-out 0.7s both;
+        }
+
+        .achievement {
+            background: linear-gradient(145deg, rgba(255,170,0,0.25), rgba(255,238,68,0.15));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,170,0,0.5);
+            border-radius: 3rem;
+            padding: clamp(2.2rem, 6vw, 2.8rem);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .achievement::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, #ffdd44, #ffaa00, #ffdd44);
+            transform: translateX(-100%);
+            transition: transform 0.8s;
+        }
+
+        .achievement:hover::before { transform: translateX(100%); }
+        .achievement:hover {
+            transform: translateY(-12px) scale(1.08);
+            box-shadow: 0 35px 90px rgba(255,170,0,0.5);
+            border-color: #ffdd44;
+        }
+
+        .achievement-icon {
+            font-size: clamp(3rem, 9vw, 4rem);
+            margin-bottom: 1.8rem;
+            filter: drop-shadow(0 0 25px rgba(255,238,68,0.8));
+        }
+
+        .achievement-title {
+            font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+            font-weight: 900;
+            color: #ffdd44;
+            margin-bottom: 1rem;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 0.06em;
+            line-height: 1.3;
+        }
+
+        .achievement-subtitle {
+            color: #ffaa00;
+            font-weight: 700;
+            font-size: clamp(1rem, 2.8vw, 1.2rem);
+            letter-spacing: 0.04em;
+        }
+
+        /* МОБИЛЬНОЕ МЕНЮ */
+        @media (max-width: 1024px) {
+            .nav-links {
+                position: fixed;
+                top: clamp(70px, 10vh, 85px);
+                right: clamp(1.5rem, 5vw, 2rem);
+                width: min(90vw, 420px);
+                height: calc(100vh - clamp(70px, 10vh, 85px));
+                background: rgba(0,0,0,0.98);
+                backdrop-filter: blur(50px) saturate(200%);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding: clamp(4rem, 10vh, 6rem) 3rem;
+                gap: clamp(1.8rem, 4vw, 2.5rem);
+                transform: translateX(100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 999;
+                border-radius: 0 0 30px 30px;
+                border: 1px solid rgba(255,170,0,0.3);
+                box-shadow:
+                        -20px 20px 60px rgba(0,0,0,0.7),
+                        0 0 50px rgba(255,170,0,0.2);
+                overflow-y: auto;
+            }
+
+            .nav-links.show {
+                transform: translateX(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .nav-links a {
+                width: 100%;
+                max-width: 320px;
+                padding: 1.8rem 2.5rem;
+                font-size: clamp(1.1rem, 4vw, 1.4rem);
+                text-align: center;
+                border: 1px solid rgba(255,255,255,0.15);
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .floating-circle { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding-top: clamp(120px, 20vh, 140px);
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .modal-content {
+                padding: 2.5rem 2rem;
+                border-radius: 3rem;
+            }
+
+            .stats-grid, .charts-grid, .achievements {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: clamp(2.5rem, 9vw, 4rem);
+                padding: 0 1rem;
+            }
+
+            .hero-subtitle {
+                padding: 0 1rem;
+                margin-bottom: 4rem;
+            }
+        }
+
+        /* СКРОЛЛ */
+        html { scroll-behavior: smooth; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<!-- 🔥 АНИМИРОВАННЫЕ КРУГИ -->
+<div class="floating-circle circle-1"></div>
+<div class="floating-circle circle-2"></div>
+<div class="floating-circle circle-3"></div>
+
+<!-- ✅ ЕДИНЫЙ GUARD -->
+<div id="authGuard" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(145deg, #0a0a0a, #1a0000); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+    <div style="background: rgba(20,20,20,0.98); border-radius: 3rem; padding: 3.5rem 2.5rem; border: 1px solid rgba(255,255,255,0.15); text-align: center; max-width: 420px; width: 90%; backdrop-filter: blur(20px);">
+        <div style="width: 90px; height: 90px; margin: 0 auto 2rem; font-size: 2.8rem; background: linear-gradient(135deg, #ff1a1a, #ff6600); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 40px rgba(255,26,26,0.4);">🔐</div>
+        <h2 style="color: white; font-size: 2rem; margin-bottom: 1.5rem; font-weight: 900; letter-spacing: 0.05em;">Требуется вход</h2>
+        <p style="color: #ccc; margin-bottom: 2.5rem; font-size: 1.1rem; line-height: 1.6;">Авторизуйтесь для доступа к персональным тренировкам FitAI</p>
+        <a href="auth.html" style="width: 100%; padding: 1.4rem 2rem; background: linear-gradient(135deg, #ff1a1a, #ff6600); color: white; text-decoration: none; border-radius: 2rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem; font-size: 1.1rem; box-shadow: 0 15px 40px rgba(255,26,26,0.4); transition: all 0.3s;">🔐 Войти в систему</a>
+    </div>
+</div>
+
+<!-- 🔥 ДИНАМИЧНАЯ НАВИГАЦИЯ FitAI -->
+<nav>
+    <div class="nav-container">
+        <div class="logo">🥊 FitAI</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="workouts.html">Тренировки</a></li>
+            <li><a href="nutrition.html" class="active">Питание</a></li>
+            <li><a href="progress.html">Прогресс</a></li>
+            <li><a href="profile.html">Профиль</a></li>
+        </ul>
+        <div class="nav-toggle" id="navToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</nav>
+
+<!-- КОНТЕНТ -->
+<main id="mainContent" style="display: none;">
+    <section class="hero">
+        <h1>📊 АНАЛИЗ ПРОГРЕССА</h1>
+        <p class="hero-subtitle">Рабочие веса • объем тренировок • техника • трансформации • достижения</p>
+
+        <div class="modal-content">
+            <!-- 📊 СТАТИСТИКА -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-icon">📈</span>
+                    <div class="stat-number" data-target="247">0</div>
+                    <div class="stat-label">Тренировок</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">⚡</span>
+                    <div class="stat-number" data-target="2850">0</div>
+                    <div class="stat-label">Тоннаж кг</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🏋️</span>
+                    <div class="stat-number" data-target="142">0</div>
+                    <div class="stat-label">Макс. жим</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🔥</span>
+                    <div class="stat-number" data-target="92">0</div>
+                    <div class="stat-label">Техника %</div>
+                </div>
+            </div>
+
+            <!-- 📈 ГРАФИКИ -->
+            <div class="charts-section">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">💪 ЖИМ ЛЕЖА</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-progress="85"></div>
+                        </div>
+                        <div class="progress-label">85 кг (+12 кг за месяц)</div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">🍑 ПРИСЕДАНИЯ</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-progress="110"></div>
+                        </div>
+                        <div class="progress-label">110 кг (+18 кг)</div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">🔥 ОБЪЕМ ТРЕНИР.</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-progress="92"></div>
+                        </div>
+                        <div class="progress-label">92% плана</div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">🥗 КБЖУ</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-progress="88"></div>
+                        </div>
+                        <div class="progress-label">88% цели</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🏆 ДОСТИЖЕНИЯ -->
+            <div class="achievements">
+                <div class="achievement">
+                    <div class="achievement-icon">🥇</div>
+                    <div class="achievement-title">ЖИМ 100КГ</div>
+                    <div class="achievement-subtitle">Поздравляем!</div>
+                </div>
+                <div class="achievement">
+                    <div class="achievement-icon">🔥</div>
+                    <div class="achievement-title">30 ДНЕЙ ВЫПОЛНЕНО</div>
+                    <div class="achievement-subtitle">Серия!</div>
+                </div>
+                <div class="achievement">
+                    <div class="achievement-icon">🥩</div>
+                    <div class="achievement-title">ПРОТ. 200Г/ДЕНЬ</div>
+                    <div class="achievement-subtitle">7 дней</div>
+                </div>
+                <div class="achievement">
+                    <div class="achievement-icon">💧</div>
+                    <div class="achievement-title">ВОДА 100%</div>
+                    <div class="achievement-subtitle">14 дней</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    (function() {
+        'use strict';
+
+        console.log('🚀 FitAI Progress — Полная инициализация');
+
+        // 🔥 ДИНАМИЧНАЯ НАВИГАЦИЯ
+        function initNavigation() {
+            const nav = document.getElementById('mainNav');
+            const toggle = document.getElementById('navToggle');
+            const links = document.getElementById('navLinks');
+
+            // СКРОЛЛ ЭФФЕКТ
+            window.addEventListener('scroll', () => {
+                nav.classList.toggle('scrolled', window.pageYOffset > 50);
+            }, { passive: true });
+
+            // МОБИЛЬНОЕ МЕНЮ
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+                links.classList.toggle('show');
+                document.body.style.overflow = links.classList.contains('show') ? 'hidden' : '';
+            });
+
+            // АКТИВНАЯ СТРАНИЦА
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    document.querySelector('.nav-links a.active')?.classList.remove('active');
+                    link.classList.add('active');
+                    if (window.innerWidth <= 1024) {
+                        toggle.classList.remove('active');
+                        links.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+
+            // ЗАКРЫТИЕ ПО ФОНУ
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 1024 && links.classList.contains('show') &&
+                    !nav.contains(e.target)) {
+                    toggle.classList.remove('active');
+                    links.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+
+        const USER_KEY = 'fitai_user';
+        const guard = document.getElementById('authGuard');
+        const mainContent = document.getElementById('mainContent');
+
+        const userData = localStorage.getItem(USER_KEY);
+        if (!userData) {
+            console.log('❌ Нет авторизации');
+            initNavigation();
+            return;
+        }
+
+        try {
+            const user = JSON.parse(userData);
+            console.log('✅ Авторизован:', user.username);
+
+            guard.remove();
+            mainContent.style.display = 'block';
+
+            // КНОПКА ВЫХОДА
+            const logoutBtn = document.createElement('button');
+            logoutBtn.innerHTML = `👋 Выход (${user.username})`;
+            logoutBtn.style.cssText = `
+                    padding: 0.8rem 1.8rem; font-size: 0.95rem;
+                    background: linear-gradient(135deg, #ff1a1a, #ff6600);
+                    color: white; border: none; border-radius: 30px;
+                    font-weight: 800; cursor: pointer; margin-left: 1rem;
+                    transition: all 0.3s;
+                `;
+            logoutBtn.onmouseover = () => logoutBtn.style.transform = 'scale(1.05)';
+            logoutBtn.onmouseout = () => logoutBtn.style.transform = 'scale(1)';
+            logoutBtn.onclick = () => {
+                if (confirm(`Выйти из аккаунта ${user.username}?`)) {
+                    localStorage.removeItem(USER_KEY);
+                    window.location.href = 'auth.html';
+                }
+            };
+            document.querySelector('.nav-container').appendChild(logoutBtn);
+
+            initNavigation();
+            initProgressPage();
+
+        } catch(e) {
+            console.error('❌ Ошибка авторизации:', e);
+            localStorage.removeItem(USER_KEY);
+        }
+
+        function initProgressPage() {
+            console.log('📊 Инициализация прогресса');
+
+            animateNumbers();
+            setTimeout(animateProgressBars, 800);
+            initParallax();
+        }
+
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('.stat-number');
+            numbers.forEach(number => {
+                const target = parseInt(number.dataset.target);
+                let current = 0;
+                const increment = target / 120;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    number.textContent = Math.floor(current).toLocaleString();
+                }, 25);
+            });
+        }
+
+        function animateProgressBars() {
+            const bars = document.querySelectorAll('.progress-bar');
+            bars.forEach(bar => {
+                const progress = bar.dataset.progress;
+                const delay = Math.random() * 600 + 200;
+                setTimeout(() => {
+                    bar.style.width = progress + '%';
+                }, delay);
+            });
+        }
+
+        function initParallax() {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                document.querySelectorAll('.floating-circle').forEach((circle, i) => {
+                    const speeds = [0.5, -0.3, 0.4];
+                    circle.style.transform = `translateY(${scrolled * speeds[i]}px)`;
+                });
+            }, { passive: true });
+        }
+
+        console.log('✅ FitAI Progress полностью готов!');
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🥊 FitAI — Твой ИИ-тренер</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           FitAI - iPhone PERFECT + ЭФФЕКТЫ + ОТСТУПЫ
+           ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background:
+                /* Главный градиент */
+                    linear-gradient(135deg, #000 0%, #1a0000 50%, #2a0000 100%),
+                        /* Слои света */
+                    radial-gradient(ellipse at 20% 20%, rgba(255,26,26,0.15) 0%, transparent 50%),
+                    radial-gradient(ellipse at 80% 80%, rgba(255,102,0,0.12) 0%, transparent 50%),
+                    radial-gradient(ellipse at 40% 60%, rgba(68,255,68,0.08) 0%, transparent 50%);
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+            /* iPhone safe areas */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+            min-height: 100vh;
+        }
+
+        /* 🔥 ПЛАВАЮЩИЕ КРУГИ С СВЕЧЕНИЕМ */
+        .floating-circle {
+            position: fixed;
+            border-radius: 50%;
+            z-index: 1;
+            animation: float 12s ease-in-out infinite;
+            filter: blur(0.5px);
+        }
+        .circle-1 {
+            width: 400px; height: 400px;
+            background:
+                    radial-gradient(circle at 30% 30%, rgba(255,26,26,0.35) 0%, rgba(255,26,26,0.15) 40%, transparent 70%),
+                    radial-gradient(circle, rgba(255,26,26,0.1), transparent);
+            top: 10%; left: -20%; animation-delay: 0s;
+            box-shadow:
+                    0 0 100px rgba(255,26,26,0.6),
+                    inset 0 0 50px rgba(255,26,26,0.2);
+        }
+        .circle-2 {
+            width: 320px; height: 320px;
+            background:
+                    radial-gradient(circle at 70% 70%, rgba(68,255,68,0.25) 0%, rgba(68,255,68,0.1) 40%, transparent 70%),
+                    radial-gradient(circle, rgba(68,255,68,0.08), transparent);
+            top: 70%; right: -15%; animation-delay: 4s;
+            box-shadow:
+                    0 0 120px rgba(68,255,68,0.5),
+                    inset 0 0 40px rgba(68,255,68,0.15);
+        }
+        .circle-3 {
+            width: 450px; height: 450px;
+            background:
+                    radial-gradient(circle at 20% 80%, rgba(255,102,0,0.2) 0%, rgba(255,102,0,0.08) 40%, transparent 70%),
+                    radial-gradient(circle, rgba(255,102,0,0.12), transparent);
+            bottom: 5%; left: 5%; animation-delay: 8s;
+            box-shadow:
+                    0 0 150px rgba(255,102,0,0.4),
+                    inset 0 0 60px rgba(255,102,0,0.2);
+        }
+
+        /* ✨ ПЫЛЬ/ЧАСТИЦЫ */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8), transparent);
+            border-radius: 50%;
+            animation: particleFloat 20s linear infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-25px) rotate(90deg) scale(1.05); }
+            50% { transform: translateY(-10px) rotate(180deg) scale(0.95); }
+            75% { transform: translateY(-30px) rotate(270deg) scale(1.08); }
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* ✅ НАВИГАЦИЯ */
+        nav {
+            height: clamp(70px, 10vh, 80px);
+            position: fixed;
+            top: env(safe-area-inset-top, 0);
+            width: 100%;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(25px) saturate(180%);
+            box-shadow:
+                    0 8px 32px rgba(0,0,0,0.4),
+                    0 2px 20px rgba(255,26,26,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 clamp(1.8rem, 6vw, 2.5rem);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .logo {
+            font-size: clamp(1.6rem, 5vw, 2.2rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff1a1a, #ff6600, #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoGlow 2.5s ease-in-out infinite alternate;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 0.05em; /* ОТСТУПЫ между буквами */
+        }
+
+        @keyframes logoGlow {
+            from {
+                filter: drop-shadow(0 0 8px #ff1a1a) brightness(1);
+            }
+            to {
+                filter: drop-shadow(0 0 20px #ff6600) brightness(1.1);
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem; /* Больше отступов */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.8rem 1.6rem; /* Больше padding */
+            border-radius: 30px;
+            transition: all 0.4s;
+            font-size: clamp(0.95rem, 3.5vw, 1rem);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.03em; /* Отступы букв */
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transition: left 0.6s;
+        }
+
+        .nav-links a:hover::before { left: 100%; }
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255,26,26,0.25);
+            color: #ff6600;
+            transform: scale(1.08);
+            box-shadow: 0 8px 25px rgba(255,26,26,0.4);
+        }
+
+        /* ✅ ГАМБУРГЕР */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px; /* Больше отступов */
+            width: 56px;
+            height: 56px;
+            background: rgba(255,26,26,0.25);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 16px;
+            cursor: pointer;
+            padding: 10px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-left: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-toggle:hover {
+            background: rgba(255,26,26,0.45);
+            transform: scale(1.08) rotate(90deg);
+            box-shadow: 0 10px 35px rgba(255,26,26,0.5);
+        }
+
+        .nav-toggle span {
+            width: 26px;
+            height: 4px;
+            background: linear-gradient(135deg, #fff, #ff6600);
+            border-radius: 3px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .nav-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        .nav-toggle.active span:nth-child(2) {
+            opacity: 0;
+            transform: scale(0);
+        }
+        .nav-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -7px);
+        }
+
+        /* ✅ ОСНОВНОЙ КОНТЕНТ */
+        main {
+            padding-top: clamp(80px, 12vh, 100px);
+            padding-bottom: 3rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            padding: clamp(2.5rem, 8vw, 4rem) clamp(2rem, 8vw, 3rem);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 10vw, 5.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff1a1a, #ff6600, #ffaa00, #ffd700);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            line-height: 1.15;
+            animation: heroPulse 3s ease-in-out infinite;
+            font-family: 'Orbitron', monospace;
+            padding: 0 clamp(2rem, 8vw, 3rem);
+            letter-spacing: 0.08em; /* БОЛЬШИЕ ОТСТУПЫ */
+            text-shadow: 0 0 30px rgba(255,26,26,0.5);
+        }
+
+        @keyframes heroPulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 25px rgba(255,26,26,0.6)) brightness(1);
+            }
+            50% {
+                transform: scale(1.04);
+                filter: drop-shadow(0 0 50px rgba(255,102,0,0.9)) brightness(1.15);
+                background-position: 100% 50%;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 4.5vw, 1.6rem);
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 5rem;
+            line-height: 1.7;
+            animation: fadeInUp 1.8s ease-out 0.4s both;
+            padding: 0 clamp(2rem, 8vw, 3rem);
+            letter-spacing: 0.04em;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ИКОНКИ */
+        .icon-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 3rem;
+            margin-bottom: 6rem;
+            padding: 0 clamp(2rem, 8vw, 3rem);
+        }
+
+        .icon-item {
+            opacity: 0;
+            animation: fadeInUp 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .icon-item:nth-child(1) { animation-delay: 0.6s; }
+        .icon-item:nth-child(2) { animation-delay: 1s; }
+        .icon-item:nth-child(3) { animation-delay: 1.4s; }
+
+        .icon-circle {
+            width: clamp(130px, 22vw, 160px);
+            height: clamp(130px, 22vw, 160px);
+            margin: 0 auto 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(3.5rem, 14vw, 4.2rem);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow:
+                    0 25px 50px rgba(0,0,0,0.5),
+                    0 0 40px rgba(255,255,255,0.1) inset;
+            image-rendering: -webkit-optimize-contrast;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+
+        .icon-circle::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent);
+            border-radius: 50%;
+            z-index: -1;
+            animation: rotateGlow 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .icon-circle:hover::before {
+            opacity: 1;
+        }
+
+        .icon-circle:hover {
+            transform: translateY(-20px) scale(1.15) rotate(360deg);
+            box-shadow:
+                    0 40px 80px rgba(0,0,0,0.7),
+                    0 0 60px rgba(255,26,26,0.8);
+        }
+
+        .icon-circle.video {
+            background: linear-gradient(135deg, #ff1a1a, #ff6600, #ff4500);
+            animation: videoPulse 2.2s ease-in-out infinite;
+        }
+        .icon-circle.nutrition {
+            background: linear-gradient(135deg, #44ff44, #66ff99, #00ff88);
+            animation: nutritionPulse 3s ease-in-out infinite reverse;
+        }
+        .icon-circle.progress {
+            background: linear-gradient(135deg, #4488ff, #66aaff, #0099ff);
+            animation: progressRotate 3.5s linear infinite;
+        }
+
+        /* КАРТОЧКИ */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 3rem;
+            margin: 6rem 0;
+            padding: 0 clamp(2rem, 8vw, 3rem);
+        }
+
+        .feature-card {
+            background: rgba(20,20,20,0.92);
+            padding: 3.5rem 3rem;
+            border-radius: 32px;
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px) saturate(180%);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.8s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-25px) scale(1.03);
+            box-shadow:
+                    0 50px 100px rgba(255,26,26,0.35),
+                    0 0 60px rgba(255,26,26,0.2);
+            border-color: rgba(255,26,26,0.5);
+        }
+
+        .feature-card h2 {
+            font-size: clamp(1.6rem, 5vw, 2rem);
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        .feature-card p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        /* КНОПКИ */
+        .section-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ff1a1a, #ff6600, #ff4500);
+            background-size: 200% 200%;
+            color: white;
+            padding: 1.5rem 3rem;
+            border-radius: 60px;
+            font-weight: 800;
+            text-decoration: none;
+            font-size: clamp(1.05rem, 4.5vw, 1.15rem);
+            transition: all 0.5s;
+            box-shadow:
+                    0 15px 40px rgba(255,26,26,0.4),
+                    0 0 30px rgba(255,26,26,0.2);
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            min-height: 64px;
+            touch-action: manipulation;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.04em;
+            animation: btnShimmer 3s infinite;
+        }
+
+        .section-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.7s;
+        }
+
+        .section-btn:hover::before {
+            left: 100%;
+        }
+
+        .section-btn:hover {
+            transform: translateY(-8px) scale(1.08);
+            box-shadow:
+                    0 30px 70px rgba(255,26,26,0.6),
+                    0 0 50px rgba(255,26,26,0.4);
+            background-position: 100% 50%;
+        }
+
+        @keyframes btnShimmer {
+            0%, 100% { background-position: 200% 0; }
+            50% { background-position: 0 0; }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 6rem 0 3rem;
+            padding: 0 clamp(2rem, 8vw, 3rem);
+        }
+
+        /* ✅ МОБИЛЬНАЯ АДАПТАЦИЯ */
+        @media (max-width: 1024px) {
+            .nav-links {
+                position: fixed;
+                top: calc(clamp(70px, 10vh, 80px) + env(safe-area-inset-top, 0));
+                right: clamp(1.5rem, 6vw, 2rem);
+                width: min(90vw, 360px);
+                background: rgba(0,0,0,0.96);
+                backdrop-filter: blur(35px) saturate(200%);
+                flex-direction: column;
+                align-items: center;
+                padding: 3rem 2rem;
+                gap: 1.8rem;
+                transform: translateX(100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 999;
+                border-radius: 24px 0 24px 24px;
+                border: 1px solid rgba(255,255,255,0.1);
+                box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            }
+
+            .nav-links.show {
+                transform: translateX(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: clamp(2.4rem, 8vw, 3.8rem) !important;
+                line-height: 1.1 !important;
+                padding: 0 8vw;
+                letter-spacing: 0.06em;
+                margin-bottom: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: clamp(1.1rem, 4.5vw, 1.3rem);
+                padding: 0 8vw;
+                line-height: 1.7;
+                margin-bottom: 4rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .icon-row {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+
+            .floating-circle {
+                display: none;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .hero {
+                padding: 2rem 6vw;
+            }
+
+            .icon-row {
+                padding: 0 6vw;
+            }
+
+            .features {
+                padding: 0 8vw;
+                gap: 1.8rem;
+            }
+        }
+
+        /* АНИМАЦИИ */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes rotateGlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes videoPulse {
+            0%, 100% {
+                box-shadow: 0 0 25px rgba(255,26,26,0.6), inset 0 0 30px rgba(255,255,255,0.2);
+            }
+            50% {
+                box-shadow: 0 0 55px rgba(255,102,0,1), inset 0 0 40px rgba(255,255,255,0.3);
+            }
+        }
+
+        @keyframes nutritionPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes progressRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* КНОПКА ВЫХОДА */
+        .exit-btn {
+            position: fixed;
+            top: calc(clamp(70px, 10vh, 80px) + 15px + env(safe-area-inset-top, 0));
+            right: clamp(20px, 6vw, 25px);
+            z-index: 999;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #ff1a1a, #ff6600);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: clamp(13px, 3.5vw, 15px);
+            box-shadow:
+                    0 10px 30px rgba(255,26,26,0.5),
+                    0 0 25px rgba(255,26,26,0.3);
+            transition: all 0.4s;
+            touch-action: manipulation;
+            letter-spacing: 0.03em;
+        }
+
+        .exit-btn:hover {
+            transform: translateY(-5px) scale(1.08);
+            box-shadow:
+                    0 25px 50px rgba(255,26,26,0.7),
+                    0 0 40px rgba(255,26,26,0.5);
+        }
+    </style>
+</head>
+<body>
+<!-- 🔥 ПЛАВАЮЩИЕ КРУГИ -->
+<div class="floating-circle circle-1"></div>
+<div class="floating-circle circle-2"></div>
+<div class="floating-circle circle-3"></div>
+
+<!-- ✨ ПЫЛЬНЫЕ ЧАСТИЦЫ -->
+<div class="particles" id="particles"></div>
+
+<!-- ✅ НАВИГАЦИЯ -->
+<nav>
+    <div class="nav-container">
+        <div class="logo">🥊 FitAI</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html" class="active">Главная</a></li>
+            <li><a href="workouts.html">Тренировки</a></li>
+            <li><a href="nutrition.html">Питание</a></li>
+            <li><a href="progress.html">Прогресс</a></li>
+            <li><a href="profile.html">Профиль</a></li>
+        </ul>
+        <div class="nav-toggle" id="navToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="auth-buttons" id="authButtons">
+            <a href="auth.html" class="section-btn" style="width: auto; padding: 1rem 2rem; font-size: clamp(0.95rem, 3.5vw, 1rem); min-height: 48px; margin-left: 1rem;">🔐 Войти</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<main id="mainContent" style="display: none;">
+    <section class="hero">
+        <h1>Интеллектуальный ИИ‑тренер</h1>
+        <p class="hero-subtitle">Видео-анализ техники • КБЖУ по фото • Автоподбор нагрузки</p>
+
+        <div class="icon-row">
+            <div class="icon-item">
+                <a href="workouts.html">
+                    <div class="icon-circle video"><span>🎥</span></div>
+                </a>
+                <h3>Видео анализ</h3>
+                <p>Проверка техники в реальном времени</p>
+            </div>
+            <div class="icon-item">
+                <a href="nutrition.html">
+                    <div class="icon-circle nutrition"><span>🍎</span></div>
+                </a>
+                <h3>КБЖУ еды</h3>
+                <p>Распознавание по фото</p>
+            </div>
+            <div class="icon-item">
+                <a href="progress.html">
+                    <div class="icon-circle progress"><span>📊</span></div>
+                </a>
+                <h3>Прогресс</h3>
+                <p>Графики и статистика</p>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card" style="animation-delay: 1.5s">
+                <h2>🎥 ИИ-анализ техники</h2>
+                <p>Снимайте видео упражнений с разных ракурсов — нейросеть мгновенно проверит углы суставов, положение таза, спины и даст персональный фидбек</p>
+                <a href="workouts.html" class="section-btn">🚀 Начать тренировки</a>
+            </div>
+            <div class="feature-card" style="animation-delay: 1.9s">
+                <h2>🍎 КБЖУ распознавание</h2>
+                <p>Фотографируйте любую еду — компьютерное зрение определит состав блюд и точно посчитает калории, белки, жиры и углеводы</p>
+                <a href="nutrition.html" class="section-btn">📸 Открыть трекер</a>
+            </div>
+        </div>
+
+        <div class="cta-buttons">
+            <a href="workouts.html" class="section-btn">💪 Тренировки</a>
+            <a href="nutrition.html" class="section-btn">🍽️ Питание</a>
+            <a href="profile.html" class="section-btn">👤 Профиль</a>
+        </div>
+    </section>
+</main>
+
+<script>
+    (function() {
+        'use strict';
+        console.log('🚀 FitAI Главная - FULL EFFECTS + SPACING');
+
+        const USER_KEY = 'fitai_user';
+
+        // ✨ СОЗДАНИЕ ЧАСТИЦ
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // ✅ МОБИЛЬНОЕ МЕНЮ
+        function initMobileMenu() {
+            const toggle = document.getElementById('navToggle');
+            const navLinks = document.getElementById('navLinks');
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggle.classList.toggle('active');
+                navLinks.classList.toggle('show');
+            });
+
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    toggle.classList.remove('active');
+                    navLinks.classList.remove('show');
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!toggle.contains(e.target) && !navLinks.contains(e.target)) {
+                    toggle.classList.remove('active');
+                    navLinks.classList.remove('show');
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 1024) {
+                    toggle.classList.remove('active');
+                    navLinks.classList.remove('show');
+                }
+            });
+        }
+
+        // ✅ TOUCH ОПТИМИЗАЦИЯ
+        function initTouchOptimization() {
+            let viewport = document.querySelector("meta[name=viewport]");
+
+            document.addEventListener('touchstart', function(event) {
+                if (event.target.matches('button, a, .nav-toggle, .section-btn')) {
+                    if (viewport) {
+                        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+                    }
+                }
+            }, true);
+
+            document.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    if (viewport) {
+                        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+                    }
+                }, 400);
+            }, true);
+        }
+
+        // ✅ АВТОРИЗАЦИЯ
+        function showAuthScreen() {
+            document.body.innerHTML = `
+                <div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:linear-gradient(135deg,#000,#1a0000);display:flex;align-items:center;justify-content:center;font-family:'Inter',Arial;z-index:9999;padding:env(safe-area-inset-top) env(safe-area-inset-left) env(safe-area-inset-bottom) env(safe-area-inset-right);box-sizing:border-box;">
+                    <div style="background:rgba(20,20,20,0.95);backdrop-filter:blur(30px);padding:4rem 3rem;border-radius:3rem;border:1px solid rgba(255,255,255,0.15);text-align:center;max-width:420px;width:92%;box-shadow:0 30px 80px rgba(0,0,0,0.6);">
+                        <div style="width:90px;height:90px;margin:0 auto 2rem;font-size:2.8rem;background:linear-gradient(135deg,#ff1a1a,#ff6600);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(255,26,26,0.6);">🔐</div>
+                        <h2 style="color:white;font-size:clamp(1.7rem,7vw,2rem);margin-bottom:1.5rem;font-weight:900;letter-spacing:0.05em;">Требуется вход</h2>
+                        <p style="color:rgba(255,255,255,0.9);margin-bottom:3rem;line-height:1.7;font-size:clamp(1.1rem,4.5vw,1.2rem);letter-spacing:0.03em;max-width:300px;margin-left:auto;margin-right:auto;">Авторизуйтесь для доступа к FitAI</p>
+                        <a href="auth.html" style="display:inline-flex;align-items:center;justify-content:center;width:100%;padding:1.5rem 3rem;background:linear-gradient(135deg,#ff1a1a,#ff6600);color:white;text-decoration:none;border-radius:2rem;font-weight:800;font-size:clamp(1.1rem,4.5vw,1.2rem);min-height:64px;box-shadow:0 15px 40px rgba(255,26,26,0.5);letter-spacing:0.04em;transition: all 0.4s;">🔐 Войти в систему</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ✅ ИНИЦИАЛИЗАЦИЯ
+        createParticles();
+        initMobileMenu();
+        initTouchOptimization();
+
+        const userData = localStorage.getItem(USER_KEY);
+        if (!userData) {
+            showAuthScreen();
+            return;
+        }
+
+        try {
+            const user = JSON.parse(userData);
+            if (!user.username) throw new Error('Нет username');
+
+            console.log('✅ Авторизован:', user.username);
+            window.fitaiUser = user;
+
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('authButtons').innerHTML = '';
+
+            // АНИМАЦИИ
+            setTimeout(() => {
+                document.querySelectorAll('.feature-card, .icon-item').forEach((el, index) => {
+                    el.style.transitionDelay = `${index * 0.15}s`;
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                });
+            }, 500);
+
+            // КНОПКА ВЫХОДА
+            setTimeout(() => {
+                const exitBtn = document.createElement('button');
+                exitBtn.className = 'exit-btn';
+                exitBtn.innerHTML = `👋 ВЫХОД (${user.username.toUpperCase()})`;
+                exitBtn.onclick = () => {
+                    if (confirm(`Выйти из аккаунта ${user.username}?`)) {
+                        localStorage.removeItem(USER_KEY);
+                        showAuthScreen();
+                    }
+                };
+                document.body.appendChild(exitBtn);
+            }, 800);
+
+        } catch(e) {
+            console.error('❌ Ошибка авторизации:', e);
+            localStorage.removeItem(USER_KEY);
+            showAuthScreen();
+        }
+
+        // ✅ ПАРАЛЛАКС
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const circle1 = document.querySelector('.circle-1');
+            const circle2 = document.querySelector('.circle-2');
+            const circle3 = document.querySelector('.circle-3');
+
+            if (circle1) circle1.style.transform = `translateY(${scrolled * 0.5}px) scale(1)`;
+            if (circle2) circle2.style.transform = `translateY(${-scrolled * 0.3}px) scale(1)`;
+            if (circle3) circle3.style.transform = `translateY(${scrolled * 0.4}px) scale(1)`;
+        });
+
+        // ✅ MOUSE FOLLOW эффект для десктопа
+        document.addEventListener('mousemove', (e) => {
+            const circles = document.querySelectorAll('.floating-circle');
+            circles.forEach((circle, index) => {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                const speed = 0.02 + (index * 0.01);
+                circle.style.transform += ` translate(${x * speed * 20}px, ${y * speed * 20}px)`;
+            });
+        });
+    })();
+</script>
+</body>
+</html>

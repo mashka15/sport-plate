@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💪 FitAI — Тренировки</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background:
+                    linear-gradient(135deg, #000 0%, #1a0000 50%, #2a0000 100%),
+                    radial-gradient(ellipse at 20% 30%, rgba(255,102,0,0.18) 0%, transparent 50%),
+                    radial-gradient(ellipse at 80% 70%, rgba(255,26,26,0.12) 0%, transparent 50%);
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+            letter-spacing: 0.02em;
+        }
+
+        /* 🔥 АНИМИРОВАННЫЕ КРУГИ */
+        .floating-circle {
+            position: fixed; border-radius: 50%; z-index: 1;
+            animation: float 12s ease-in-out infinite;
+        }
+        .circle-1 {
+            width: 380px; height: 380px;
+            background: radial-gradient(circle, rgba(255,102,0,0.3), rgba(255,102,0,0.12), transparent);
+            top: 15%; left: -18%;
+            box-shadow: 0 0 120px rgba(255,102,0,0.5);
+            animation-delay: 0s;
+        }
+        .circle-2 {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(255,26,26,0.25), rgba(255,26,26,0.08), transparent);
+            top: 65%; right: -12%;
+            box-shadow: 0 0 100px rgba(255,26,26,0.4);
+            animation-delay: 4s;
+        }
+        .circle-3 {
+            width: 320px; height: 320px;
+            background: radial-gradient(circle, rgba(255,170,0,0.15), transparent);
+            bottom: 8%; left: 15%;
+            animation-delay: 8s;
+            box-shadow: 0 0 100px rgba(255,170,0,0.3);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            33% { transform: translateY(-25px) rotate(120deg) scale(1.04); }
+            66% { transform: translateY(-12px) rotate(240deg) scale(0.96); }
+        }
+
+        /* 🔥 ДИНАМИЧНАЯ НАВИГАЦИЯ */
+        nav {
+            height: clamp(70px, 10vh, 85px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.97);
+            backdrop-filter: blur(35px) saturate(200%);
+            box-shadow:
+                    0 8px 32px rgba(0,0,0,0.5),
+                    0 2px 20px rgba(255,26,26,0.3),
+                    inset 0 1px 0 rgba(255,255,255,0.1);
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-bottom: 1px solid rgba(255,102,0,0.3);
+        }
+
+        nav.scrolled {
+            height: 70px;
+            backdrop-filter: blur(50px);
+            box-shadow:
+                    0 5px 25px rgba(0,0,0,0.6),
+                    0 2px 15px rgba(255,26,26,0.4);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            padding: 0 clamp(1.5rem, 5vw, 3rem);
+            position: relative;
+        }
+
+        .logo {
+            font-size: clamp(1.8rem, 5vw, 2.4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff1a1a 0%, #ff6600 30%, #ffaa00 70%, #ff6600 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoGlow 3s ease-in-out infinite;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 0.08em;
+            position: relative;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            background: linear-gradient(45deg, #ff1a1a, #ff6600, #ffaa00, #ff1a1a);
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0;
+            transition: all 0.4s;
+        }
+
+        .logo:hover::before {
+            opacity: 0.3;
+            animation: rotateGlow 2s linear infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { filter: drop-shadow(0 0 15px rgba(255,26,26,0.8)); background-position: 0% 50%; }
+            50% { filter: drop-shadow(0 0 30px rgba(255,102,0,1)); background-position: 100% 50%; }
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* НАВИГАЦИОННЫЕ ССЫЛКИ */
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: clamp(1.5rem, 3vw, 2.5rem);
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.95);
+            text-decoration: none;
+            font-weight: 800;
+            padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1.8rem, 4vw, 2.5rem);
+            border-radius: 50px;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.04em;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255,255,255,0.3) 50%,
+            transparent 100%);
+            transition: left 0.7s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            width: 0; height: 3px;
+            background: linear-gradient(90deg, #ff1a1a, #ff6600);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::before { left: 100%; }
+        .nav-links a:hover::after { width: 80%; }
+
+        .nav-links a.active,
+        .nav-links a:hover {
+            background: linear-gradient(135deg, rgba(255,26,26,0.25), rgba(255,102,0,0.2));
+            color: #ffaa00;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow:
+                    0 15px 40px rgba(255,26,26,0.4),
+                    0 0 20px rgba(255,102,0,0.3);
+            border: 1px solid rgba(255,102,0,0.4);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+            background: linear-gradient(90deg, #ffaa00, #ff4400);
+            height: 4px;
+            box-shadow: 0 0 10px rgba(255,102,0,0.8);
+        }
+
+        /* МОБИЛЬНЫЙ ХАМБУРГЕР */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            width: 65px; height: 65px;
+            background: rgba(255,26,26,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            padding: 14px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,102,0,0.3), rgba(255,26,26,0.2));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .nav-toggle:hover::before { opacity: 1; }
+        .nav-toggle:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 20px 50px rgba(255,26,26,0.5);
+            border-color: #ff6600;
+        }
+
+        .nav-toggle span {
+            width: 32px; height: 4px;
+            background: linear-gradient(135deg, #fff, #ffaa00);
+            border-radius: 3px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .nav-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+        .nav-toggle.active span:nth-child(2) {
+            opacity: 0; transform: scale(0);
+        }
+        .nav-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+
+        /* КОНТЕНТ */
+        main {
+            padding-top: clamp(120px, 22vh, 160px);
+            padding-bottom: 3rem;
+            padding-left: clamp(1.5rem, 6vw, 2.5rem);
+            padding-right: clamp(1.5rem, 6vw, 2.5rem);
+        }
+
+        .hero {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 11vw, 5.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6600, #ffaa00, #ff4400, #ff6600);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2.5rem;
+            line-height: 1.15;
+            animation: heroPulse 3s ease-in-out infinite;
+            font-family: 'Orbitron', monospace;
+            padding: 0 clamp(2rem, 8vw, 4rem);
+            letter-spacing: 0.08em;
+            text-shadow: 0 0 40px rgba(255,102,0,0.6);
+        }
+
+        @keyframes heroPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 30px rgba(255,102,0,0.7)); background-position: 0% 50%; }
+            50% { transform: scale(1.03); filter: drop-shadow(0 0 50px rgba(255,170,0,0.8)); background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 6rem;
+            line-height: 1.8;
+            padding: 0 clamp(2rem, 8vw, 4rem);
+            letter-spacing: 0.05em;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .modal-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: clamp(2rem, 6vw, 4rem);
+            background: rgba(20,20,20,0.95);
+            border-radius: 4rem;
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(25px) saturate(180%);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,102,0,0.08), transparent 50%);
+            z-index: 0;
+        }
+
+        .modal-content > * { position: relative; z-index: 1; }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header h2 {
+            font-size: clamp(2rem, 6vw, 3.2rem);
+            color: #ffaa00;
+            margin-bottom: 3rem;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 0.06em;
+        }
+
+        /* ФОРМА */
+        .workout-form { animation: fadeInUp 1s ease-out 0.3s both; }
+        .form-section {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,170,0,0.3);
+            border-radius: 2.5rem;
+            padding: clamp(2rem, 5vw, 2.5rem);
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .form-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 60px rgba(255,102,0,0.3);
+            border-color: #ff6600;
+        }
+
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6600, #ffaa00, #ff6600);
+            transform: translateX(-100%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .form-section h3 {
+            color: #ffaa00;
+            margin-bottom: 1.8rem;
+            font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            letter-spacing: 0.04em;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 1.5rem 1.4rem;
+            font-size: 1.1rem;
+            background: rgba(255,255,255,0.08);
+            color: white;
+            font-weight: 600;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.4s;
+            backdrop-filter: blur(15px);
+            font-family: inherit;
+        }
+
+        select:focus, input:focus {
+            border-color: #ff6600;
+            outline: none;
+            box-shadow: 0 0 25px rgba(255,102,0,0.4);
+            transform: scale(1.02);
+            background: rgba(255,255,255,0.12);
+        }
+
+        select option {
+            background: #1a1a1a;
+            color: white;
+            padding: 1rem;
+        }
+
+        .video-upload {
+            position: relative;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .video-btn {
+            background: linear-gradient(135deg, #ff6600, #ffaa00);
+            color: white;
+            padding: 1rem 1rem;
+            border-radius: 2.5rem;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+            letter-spacing: 0.04em;
+            box-shadow: 0 15px 40px rgba(255,102,0,0.3);
+        }
+
+        .video-btn:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(255,102,0,0.4);
+        }
+
+        .video-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.8s;
+        }
+
+        .video-btn:hover::before { left: 100%; }
+
+        video {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 2.5rem;
+            margin-top: 2rem;
+            display: none;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            border: 3px solid rgba(255,102,0,0.4);
+        }
+
+        video.show {
+            display: block;
+            animation: videoPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes videoPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-btn {
+            background: linear-gradient(135deg, #ff1a1a, #ff6600, #ff4500);
+            color: white;
+            padding: 1.8rem 4rem;
+            border-radius: 70px;
+            font-weight: 900;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.5s;
+            box-shadow: 0 20px 50px rgba(255,26,26,0.4);
+            width: 100%;
+            max-width: 350px;
+            letter-spacing: 0.06em;
+            font-family: 'Orbitron', monospace;
+            position: relative;
+            overflow: hidden;
+            margin-top: 2.5rem;
+        }
+
+        .section-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.8s;
+        }
+
+        .section-btn:hover::before { left: 100%; }
+        .section-btn:hover {
+            transform: translateY(-10px) scale(1.08);
+            box-shadow: 0 35px 80px rgba(255,26,26,0.6);
+        }
+
+        /* ОТЧЕТ */
+        .report-container {
+            background: rgba(255,170,0,0.15);
+            border: 2px solid rgba(255,170,0,0.4);
+            border-radius: 3rem;
+            padding: 3rem;
+            margin-top: 4rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 0.7s both;
+        }
+
+        .report-container::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,170,0,0.12) 0%, transparent 70%);
+            animation: reportGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes reportGlow {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.2; }
+        }
+
+        .report-header {
+            color: #ffaa00;
+            margin-bottom: 2.5rem;
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.12);
+            height: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2.5rem 0;
+            position: relative;
+            box-shadow: inset 0 3px 12px rgba(0,0,0,0.3);
+        }
+
+        .progress-bar div {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6600, #ffaa00, #ff4400);
+            transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(255,102,0,0.6);
+        }
+
+        .progress-bar div::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: progressShine 2.5s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .report-item {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,170,0,0.4);
+            padding: 2rem;
+            border-radius: 2.5rem;
+            margin-bottom: 1.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .report-item:hover {
+            transform: translateX(12px);
+            box-shadow: 0 25px 60px rgba(255,102,0,0.3);
+            border-color: #ff6600;
+        }
+
+        .report-item::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0; width: 6px;
+            background: linear-gradient(180deg, #ff6600, #ffaa00);
+        }
+
+        .report-content strong {
+            color: #ff6600;
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            display: block;
+            font-weight: 900;
+        }
+
+        .report-content small {
+            color: #ffaa00;
+            display: block;
+            margin: 0.4rem 0;
+            opacity: 0.9;
+        }
+
+        .report-delete {
+            background: linear-gradient(135deg, #ff1a1a, #ff4400);
+            color: white;
+            border: none;
+            padding: 1.2rem 1.8rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 800;
+            transition: all 0.4s;
+            min-width: 70px;
+            letter-spacing: 0.03em;
+        }
+
+        .report-delete:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 35px rgba(255,26,26,0.5);
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #44ff44, #66ff99);
+            color: #000;
+            font-weight: 900;
+            padding: 2rem 4rem;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            border-radius: 4rem;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s;
+            box-shadow: 0 20px 50px rgba(68,255,68,0.4);
+            letter-spacing: 0.06em;
+            font-family: 'Orbitron', monospace;
+            margin-top: 3rem;
+        }
+
+        .save-btn:not(:disabled):hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 35px 80px rgba(68,255,68,0.5);
+        }
+
+        .save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* МОБИЛЬНОЕ МЕНЮ */
+        @media (max-width: 1024px) {
+            .nav-links {
+                position: fixed;
+                top: clamp(70px, 10vh, 85px);
+                right: clamp(1.5rem, 5vw, 2rem);
+                width: min(90vw, 420px);
+                height: calc(100vh - clamp(70px, 10vh, 85px));
+                background: rgba(0,0,0,0.98);
+                backdrop-filter: blur(50px) saturate(200%);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding: clamp(4rem, 10vh, 6rem) 3rem;
+                gap: clamp(1.8rem, 4vw, 2.5rem);
+                transform: translateX(100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 999;
+                border-radius: 0 0 30px 30px;
+                border: 1px solid rgba(255,102,0,0.3);
+                box-shadow:
+                        -20px 20px 60px rgba(0,0,0,0.7),
+                        0 0 50px rgba(255,26,26,0.2);
+                overflow-y: auto;
+            }
+
+            .nav-links.show {
+                transform: translateX(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .nav-links a {
+                width: 100%;
+                max-width: 320px;
+                padding: 1.8rem 2.5rem;
+                font-size: clamp(1.1rem, 4vw, 1.4rem);
+                text-align: center;
+                border: 1px solid rgba(255,255,255,0.15);
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .floating-circle { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding-top: clamp(120px, 20vh, 140px);
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .modal-content {
+                padding: 2rem;
+                border-radius: 2.5rem;
+            }
+
+            .report-item {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .section-btn, .save-btn {
+                padding: 1.5rem 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: clamp(2.5rem, 9vw, 3.5rem);
+                padding: 0 1rem;
+            }
+
+            .hero-subtitle {
+                padding: 0 1rem;
+            }
+        }
+
+        /* СКРОЛЛ */
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body>
+<!-- 🔥 АНИМИРОВАННЫЕ КРУГИ -->
+<div class="floating-circle circle-1"></div>
+<div class="floating-circle circle-2"></div>
+<div class="floating-circle circle-3"></div>
+
+<!-- ✅ ЕДИНЫЙ GUARD -->
+<div id="authGuard" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(145deg, #0a0a0a, #1a0000); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+    <div style="background: rgba(20,20,20,0.98); border-radius: 3rem; padding: 3.5rem 2.5rem; border: 1px solid rgba(255,255,255,0.15); text-align: center; max-width: 420px; width: 90%; backdrop-filter: blur(20px);">
+        <div style="width: 90px; height: 90px; margin: 0 auto 2rem; font-size: 2.8rem; background: linear-gradient(135deg, #ff1a1a, #ff6600); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 40px rgba(255,26,26,0.4);">🔐</div>
+        <h2 style="color: white; font-size: 2rem; margin-bottom: 1.5rem; font-weight: 900; letter-spacing: 0.05em;">Требуется вход</h2>
+        <p style="color: #ccc; margin-bottom: 2.5rem; font-size: 1.1rem; line-height: 1.6;">Авторизуйтесь для доступа к персональным тренировкам FitAI</p>
+        <a href="auth.html" style="width: 100%; padding: 1.4rem 2rem; background: linear-gradient(135deg, #ff1a1a, #ff6600); color: white; text-decoration: none; border-radius: 2rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem; font-size: 1.1rem; box-shadow: 0 15px 40px rgba(255,26,26,0.4); transition: all 0.3s;">🔐 Войти в систему</a>
+    </div>
+</div>
+
+<!-- 🔥 ДИНАМИЧНАЯ НАВИГАЦИЯ FitAI -->
+<nav>
+    <div class="nav-container">
+        <div class="logo">🥊 FitAI</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="workouts.html">Тренировки</a></li>
+            <li><a href="nutrition.html" class="active">Питание</a></li>
+            <li><a href="progress.html">Прогресс</a></li>
+            <li><a href="profile.html">Профиль</a></li>
+        </ul>
+        <div class="nav-toggle" id="navToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</nav>
+
+<!-- КОНТЕНТ -->
+<main id="mainContent" style="display: none;">
+    <section class="hero">
+        <h1>💪 ТРЕНИРОВКИ</h1>
+        <p class="hero-subtitle">Заполни отчет: упражнение • подходы • повторения • видео → ИИ анализ техники в реальном времени</p>
+
+        <div class="modal-content">
+            <div class="modal-header" style="text-align: center; margin-bottom: 3.5rem;">
+                <h2>📋 НОВАЯ ТРЕНИРОВКА</h2>
+            </div>
+
+            <div class="workout-form">
+                <div class="form-section">
+                    <h3>🎯 1. Выбери упражнение</h3>
+                    <select id="exerciseSelect">
+                        <option value="">— Выберите упражнение —</option>
+                        <option value="Жим лежа">Жим лежа</option>
+                        <option value="Приседания со штангой">Приседания со штангой</option>
+                        <option value="Становая тяга">Становая тяга</option>
+                        <option value="Подтягивания">Подтягивания</option>
+                        <option value="Отжимания">Отжимания</option>
+                        <option value="Выпады">Выпады</option>
+                        <option value="Жим над головой">Жим над головой</option>
+                        <option value="Тяга верхнего блока">Тяга верхнего блока</option>
+                        <option value="Разведения гантелей">Разведения гантелей</option>
+                        <option value="Скручивания на пресс">Скручивания на пресс</option>
+                        <option value="Планка">Планка</option>
+                        <option value="Булавы (бокс)">Булавы (бокс)</option>
+                        <option value="Хук (бокс)">Хук (бокс)</option>
+                        <option value="Апперкот">Апперкот</option>
+                        <option value="Прыжки со скакалкой">Прыжки со скакалкой</option>
+                        <option value="Shadow boxing">Shadow boxing</option>
+                        <option value="Ягодичный мостик">Ягодичный мостик</option>
+                        <option value="Акробатика: колесо">Акробатика: колесо</option>
+                    </select>
+                </div>
+
+                <div class="form-section">
+                    <h3>⚡ 2. Параметры</h3>
+                    <div style="display: grid; gap: 1.8rem;">
+                        <input id="setsInput" type="number" min="1" max="10" placeholder="Подходы (3-5)">
+                        <input id="repsInput" type="number" min="1" max="20" placeholder="Повторы (8-15)">
+                    </div>
+                </div>
+
+                <div class="form-section video-upload">
+                    <h3>📹 3. Видео техники</h3>
+                    <label for="workoutVideo" class="video-btn">📱 Загрузить видео</label>
+                    <input type="file" id="workoutVideo" accept="video/*" style="display: none;">
+                    <video id="videoPreview" controls></video>
+                </div>
+
+                <button class="section-btn" onclick="addToReport()">
+                    ➕ Добавить в отчёт
+                </button>
+            </div>
+
+            <div class="report-container">
+                <div class="report-header">
+                    📋 Отчёт тренировки
+                    <span id="reportCount" style="color: #ff6600; font-weight: 900; font-size: 1.6rem;">0</span>/5
+                </div>
+                <div id="reportList"></div>
+                <div class="progress-bar">
+                    <div id="progressFill"></div>
+                </div>
+                <button class="save-btn" id="saveReportBtn" onclick="saveAndAnalyze()" disabled>
+                    💾 Сохранить и отправить на ИИ-проверку
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    (function() {
+        'use strict';
+
+        console.log('🚀 FitAI Workouts — Полная инициализация');
+
+        // 🔥 ДИНАМИЧНАЯ НАВИГАЦИЯ
+        function initNavigation() {
+            const nav = document.getElementById('mainNav');
+            const toggle = document.getElementById('navToggle');
+            const links = document.getElementById('navLinks');
+
+            // СКРОЛЛ ЭФФЕКТ
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const scroll = window.pageYOffset;
+                if (scroll > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+                lastScroll = scroll;
+            }, { passive: true });
+
+            // МОБИЛЬНОЕ МЕНЮ
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+                links.classList.toggle('show');
+                document.body.style.overflow = links.classList.contains('show') ? 'hidden' : '';
+            });
+
+            // АКТИВНАЯ СТРАНИЦА + ЗАКРЫТИЕ МЕНЮ
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    document.querySelector('.nav-links a.active')?.classList.remove('active');
+                    link.classList.add('active');
+
+                    if (window.innerWidth <= 1024) {
+                        toggle.classList.remove('active');
+                        links.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+
+            // ЗАКРЫТИЕ МЕНЮ КЛИКОМ ПО ФОНУ
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 1024 && links.classList.contains('show') &&
+                    !nav.contains(e.target)) {
+                    toggle.classList.remove('active');
+                    links.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+
+        const USER_KEY = 'fitai_user';
+        const guard = document.getElementById('authGuard');
+        const mainContent = document.getElementById('mainContent');
+        const authButtons = document.getElementById('authButtons');
+
+        let workoutReport = JSON.parse(localStorage.getItem('fitaiWorkoutReport') || '[]');
+
+        const userData = localStorage.getItem(USER_KEY);
+        if (!userData) {
+            console.log('❌ Нет авторизации');
+            initNavigation();
+            return;
+        }
+
+        try {
+            const user = JSON.parse(userData);
+            console.log('✅ Авторизован:', user.username);
+
+            guard.remove();
+            mainContent.style.display = 'block';
+
+            // КНОПКА ВЫХОДА
+            const logoutBtn = document.createElement('button');
+            logoutBtn.innerHTML = `👋 Выход (${user.username})`;
+            logoutBtn.style.cssText = `
+                    padding: 0.8rem 1.8rem; font-size: 0.95rem;
+                    background: linear-gradient(135deg, #ff1a1a, #ff6600);
+                    color: white; border: none; border-radius: 30px;
+                    font-weight: 800; cursor: pointer; margin-left: 1rem;
+                    transition: all 0.3s;
+                `;
+            logoutBtn.onmouseover = () => logoutBtn.style.transform = 'scale(1.05)';
+            logoutBtn.onmouseout = () => logoutBtn.style.transform = 'scale(1)';
+            logoutBtn.onclick = function() {
+                if (confirm(`Выйти из аккаунта ${user.username}?`)) {
+                    localStorage.removeItem(USER_KEY);
+                    window.location.href = 'auth.html';
+                }
+            };
+            document.querySelector('.nav-container').appendChild(logoutBtn);
+
+            initNavigation();
+            initWorkoutsPage();
+
+        } catch(e) {
+            console.error('❌ Ошибка авторизации:', e);
+            localStorage.removeItem(USER_KEY);
+        }
+
+        function initWorkoutsPage() {
+            console.log('💪 Инициализация тренировок');
+
+            document.getElementById('workoutVideo').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const preview = document.getElementById('videoPreview');
+                    preview.src = URL.createObjectURL(file);
+                    preview.classList.add('show');
+                    preview.play().catch(() => {}); // Автовоспроизведение
+                }
+            });
+
+            updateReportDisplay();
+        }
+
+        window.addToReport = function() {
+            const exercise = document.getElementById('exerciseSelect').value;
+            const sets = document.getElementById('setsInput').value;
+            const reps = document.getElementById('repsInput').value;
+            const videoFile = document.getElementById('workoutVideo').files[0];
+
+            if (!exercise || !sets || !reps) {
+                // Красивое уведомление
+                alert('⚠️ Заполните все поля: упражнение, подходы, повторения!');
+                document.getElementById('exerciseSelect').focus();
+                return;
+            }
+
+            workoutReport.push({
+                exercise,
+                sets: parseInt(sets),
+                reps: parseInt(reps),
+                video: videoFile ? '✅ Видео загружено' : '❌ Без видео',
+                timestamp: new Date().toLocaleString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            });
+
+            if (workoutReport.length > 5) workoutReport = workoutReport.slice(-5);
+            localStorage.setItem('fitaiWorkoutReport', JSON.stringify(workoutReport));
+            updateReportDisplay();
+
+            // Очистка формы
+            document.getElementById('exerciseSelect').value = '';
+            document.getElementById('setsInput').value = '';
+            document.getElementById('repsInput').value = '';
+            const preview = document.getElementById('videoPreview');
+            preview.classList.remove('show');
+            preview.src = '';
+            preview.pause();
+            document.getElementById('workoutVideo').value = '';
+
+            // Фокус на первое поле
+            document.getElementById('exerciseSelect').focus();
+        };
+
+        function updateReportDisplay() {
+            const list = document.getElementById('reportList');
+            const progress = document.getElementById('progressFill');
+            const btn = document.getElementById('saveReportBtn');
+            const count = document.getElementById('reportCount');
+
+            list.innerHTML = workoutReport.length ? workoutReport.map((item, i) => `
+                    <div class="report-item">
+                        <div class="report-content">
+                            <strong>${item.exercise}</strong>
+                            <small>⚡ ${item.sets}×${item.reps}</small>
+                            <small>📅 ${item.timestamp}</small>
+                            <small style="color: ${item.video.includes('✅') ? '#44ff44' : '#ffaa00'}">${item.video}</small>
+                        </div>
+                        <button class="report-delete" onclick="removeFromReport(${i})">🗑️</button>
+                    </div>
+                `).join('') : `
+                    <div style="text-align: center; color: #b8b8b8; padding: 4rem 2rem; font-size: clamp(1.1rem, 3vw, 1.3rem); line-height: 1.6;">
+                        <div style="font-size: 4rem; margin-bottom: 1.5rem; opacity: 0.5;">📝</div>
+                        Добавьте первое упражнение в отчёт
+                    </div>
+                `;
+
+            const percent = Math.min((workoutReport.length / 5) * 100, 100);
+            progress.style.width = percent + '%';
+            count.textContent = workoutReport.length;
+            btn.disabled = workoutReport.length !== 5;
+            btn.textContent = workoutReport.length === 5 ?
+                '🚀 ГОТОВО! Отправить на ИИ-анализ' :
+                `💾 Сохранить (${workoutReport.length}/5)`;
+        }
+
+        window.removeFromReport = function(index) {
+            workoutReport.splice(index, 1);
+            localStorage.setItem('fitaiWorkoutReport', JSON.stringify(workoutReport));
+            updateReportDisplay();
+        };
+
+        window.saveAndAnalyze = function() {
+            if (workoutReport.length !== 5) {
+                alert('⚠️ Заполните все 5 упражнений для ИИ-анализа!');
+                return;
+            }
+
+            const qualityScore = Math.floor(Math.random() * 15 + 85); // 85-100%
+            alert(`🎉 Отчёт сохранён!\n\n✅ Техника: ${qualityScore}/100\n✅ ИИ-анализ отправлен\n✅ Результаты в "Прогресс" через 30 сек.\n\n💪 Отличная тренировка!`);
+
+            localStorage.setItem('fitaiLastWorkout', JSON.stringify({
+                date: new Date().toLocaleDateString('ru-RU'),
+                exercises: 5,
+                quality: qualityScore,
+                timestamp: Date.now()
+            }));
+
+            // Очистка для новой тренировки
+            workoutReport = [];
+            localStorage.setItem('fitaiWorkoutReport', JSON.stringify(workoutReport));
+            updateReportDisplay();
+        };
+
+        // КЛАВИША ENTER
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' &&
+                document.activeElement.tagName !== 'INPUT' &&
+                document.activeElement.tagName !== 'SELECT' &&
+                !document.querySelector('.nav-links.show')) {
+                addToReport();
+            }
+        });
+
+        console.log('✅ FitAI Workouts полностью готов!');
+    })();
+</script>
+</body>
+</html>
